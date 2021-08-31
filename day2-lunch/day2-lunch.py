@@ -24,3 +24,9 @@ for line in f2:
         fields[8]=protein_id
         print(gene_name, protein_id)
         print(fields)
+    else:
+        if len(sys.argv)==4:
+            fields[8]=sys.argv[3]
+            print(fields)
+        else:
+            continue
