@@ -43,7 +43,7 @@ while True:
             else:
                 high_genes=genes[high][0]
                 print(high_genes)
-                print(high_pos-target_pos)s
+                print(high_pos-target_pos)
             #closest_gene=current_gene
             #print(closest_gene)
             break
