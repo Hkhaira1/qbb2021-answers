@@ -35,12 +35,15 @@ while True:
         if low==current_index:
             high_pos=genes[high][1]
             low_pos=genes[low][1]
+            #calculating the distance 
             if abs(high_pos-target_pos)>abs(low_pos-target_pos):
                 low_genes=genes[low][0]
                 print(low_genes)
+                print(low_pos-target_pos)
             else:
                 high_genes=genes[high][0]
                 print(high_genes)
+                print(high_pos-target_pos)s
             #closest_gene=current_gene
             #print(closest_gene)
             break
@@ -50,18 +53,21 @@ while True:
         if high==current_index:
             high_pos=genes[high][1]
             low_pos=genes[low][1]
+            #calculating the distance
             if abs(high_pos-target_pos)>abs(low_pos-target_pos):
                 low_genes=genes[low][0]
                 print(low_genes)
+                print(low_pos-target_pos)
             else:
                 high_genes=genes[high][0]
                 print(high_genes)
+                print(high_pos-target_pos)
             #closest_gene=current_gene
            # print(closest_gene)
             break
         high=current_index
         current_index=(high+low)//2
-
+print(counter)
         
         
 
