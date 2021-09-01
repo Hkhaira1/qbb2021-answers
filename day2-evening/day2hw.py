@@ -49,6 +49,7 @@ f3=int(sys.argv[3])
 query_dna=f[0][1]
 #print(query_dna)
 
+#create a function which kmerizes using the sequnce and kmer lenght
 def kmerize(seq, kmer_len):
     kmer_dict={}
     for i in range(len(seq)-kmer_len + 1):
@@ -66,8 +67,9 @@ for i in f2:
     target_name=i[0]
     target_dna=i[1]
     target_kmer=kmerize(target_dna,f3)
-    for q-kmers, q-pos in query_kmer.items():
-        if q-kmers in t-kmers:
-            print(target_name,t_kmers[q-kmers], q-pos)
+for q_kmers, q_pos in query_kmer.items():
+    if q_kmers in target_kmer:
+        print(target_name,target_kmer[q_kmers], q_pos)
+        #print out the names of the targets genes, targetkamers and query positions
     
         
