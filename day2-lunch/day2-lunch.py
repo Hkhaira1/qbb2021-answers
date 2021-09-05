@@ -8,10 +8,12 @@ import sys
 #f2= open(sys.argv[2],'r')
 # for line in f2:
 #     print(line.strip())
-f=open(sys.argv[1])    
+f=open(sys.argv[1])
+#create an empty dictionary    
 flydict= dict()
 for line in f:
     fields= line.strip().split('\t')
+    #assign gene name and protein id to the dictionary
     flydict[fields[0]]= fields[1]
 
 f2=open(sys.argv[2],'r')
