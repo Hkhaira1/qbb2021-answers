@@ -1,0 +1,17 @@
+$samtools faidx ref.fa
+$FastQC frag180.1.fq frag180.2.fq jump2k.1.fq jump2k.2.fq
+$FastQC
+$jellyfish count -m 50  -s 100M -t 10 -C frag180.1.fq frag180.2.fq jump2k.1.fq jump2k.2.fq
+$jellyfish histo mer_counts.jf
+$jellyfish dump -L 2 -ct mer_counts.jf | sort | head
+$jellyfish histo mer_counts.jf > reads.histo
+$ spades.py --pe1-1 frag180.1.fq --pe1-2 frag180.2.fq --mp1-1 jump2k.1.fq --mp1-2 jump2k.2.fq -o asm -t 4 -k 31
+$grep -c '>' contigs.fasta
+$samtools faidx contigs.fasta
+$dnadiff  ~/Downloads/asm/ref.fa ~/Downloads/asm/asm/contigs.fasta
+$show-coords out.delta
+$less -S out.report
+$less -S out.delta
+$less out.qdiff
+$mate contigs.fasta
+$samtools faidx contigs.fasta NODE_3_lenght_41351_cov_20.528098:26788-27499
