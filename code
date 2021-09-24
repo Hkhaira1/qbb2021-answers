@@ -1,0 +1,107 @@
+$wget "https://github.com/bxlab/qbb2021/raw/main/week2/BYxRM_subset.tar.xv"
+$tar -xvzf BYxRM_subset.tar.xv
+$wget "http://hgdownload.soe.ucsc.edu/goldenPath/sacCer3/bigZips/chromFa.tar.gz"
+$tar -xvzf chromFa.tar.gz
+$cat chr*.fa > sacCer3.fa
+$rm chr*.fa
+
+##Step 1: Index the sacCer3 genome with bwa index
+
+$bwa index sacCer3.fa
+
+##Step 2: Alignment with bwa mem
+
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample1" -t -o sacCer3.fa A01_09.fastq > A01_09.sam
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample2" -t -o sacCer3.fa A01_11.fastq > A01_11.sam
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample3" -t -o sacCer3.fa A01_23.fastq > A01_23.sam
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample4" -t -o sacCer3.fa A01_24.fastq > A01_24.sam
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample5" -t -o sacCer3.fa A01_27.fastq > A01_27.sam
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample6" -t -o sacCer3.fa A01_31.fastq > A01_31.sam
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample7" -t -o sacCer3.fa A01_35.fastq > A01_35.sam
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample8" -t -o sacCer3.fa A01_39.fastq > A01_39.sam
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample9" -t -o sacCer3.fa A01_62.fastq > A01_63.sam
+$bwa mem -R "@RG\tID:Sample1\tSM:Sample10" -t -o sacCer3.fa A01_63.fastq > A01_63.sam
+
+##Step 3: Create a sorted bam file with samtools, for input to variant callers
+
+$samtools sort A01_09.sam -o A01_09.bam
+$samtools sort A01_11.sam -o A01_11.bam
+$samtools sort A01_23.sam -o A01_23.bam
+$samtools sort A01_24.sam -o A01_24.bam
+$samtools sort A01_27.sam -o A01_27.bam
+$samtools sort A01_31.sam -o A01_31.bam
+$samtools sort A01_35.sam -o A01_35.bam
+$samtools sort A01_39.sam -o A01_39.bam
+$samtools sort A01_62.sam -o A01_62.bam
+$samtools sort A01_63.sam -o A01_63.bam
+
+##Index the bam files 
+
+$samtools index A01_09.bam
+$samtools index A01_11.bam
+$samtools index A01_23.bam
+$samtools index A01_24.bam
+$samtools index A01_27.bam
+$samtools index A01_31.bam
+$samtools index A01_35.bam
+$samtools index A01_39.bam
+$samtools index A01_62.bam
+$samtools index A01_63.bam
+
+##Step 4: Variant calling with freebayes
+
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_09.bam >A01_09.vcf
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_11.bam >A01_11.vcf
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_23.bam >A01_23.vcf
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_24.bam >A01_24.vcf
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_27.bam >A01_27.vcf
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_31.bam >A01_31.vcf
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_35.bam >A01_35.vcf
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_39.bam >A01_39.vcf
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_62.bam >A01_62.vcf
+$freebayes -f sacCer3.fa -p 1 --genotype-qualities A01_63.bam >A01_63.vcf
+
+
+##Step 5: Filter variants based on genotype quality using vcffilter
+
+$vcffilter -f "DP > 0.99" A01_09.vcf > A01_09_filter.vcf
+$vcffilter -f "DP > 0.99" A01_11.vcf > A01_11_filter.vcf
+$vcffilter -f "DP > 0.99" A01_23.vcf > A01_23_filter.vcf
+$vcffilter -f "DP > 0.99" A01_24.vcf > A01_24_filter.vcf
+$vcffilter -f "DP > 0.99" A01_27.vcf > A01_27_filter.vcf
+$vcffilter -f "DP > 0.99" A01_31.vcf > A01_31_filter.vcf
+$vcffilter -f "DP > 0.99" A01_35.vcf > A01_35_filter.vcf
+$vcffilter -f "DP > 0.99" A01_39.vcf > A01_39_filter.vcf
+$vcffilter -f "DP > 0.99" A01_62.vcf > A01_62_filter.vcf
+$vcffilter -f "DP > 0.99" A01_63.vcf > A01_63_filter.vcf
+
+
+##Step 6: Decompose complex haplotypes using vcfallelicprimitives
+
+$vcfallelicprimitives -k -g A01_09_filter.vcf >A01_09_filter_allelic.vcf
+$vcfallelicprimitives -k -g A01_11_filter.vcf >A01_11_filter_allelic.vcf
+$vcfallelicprimitives -k -g A01_23_filter.vcf >A01_23_filter_allelic.vcf
+$vcfallelicprimitives -k -g A01_24_filter.vcf >A01_24_filter_allelic.vcf
+$vcfallelicprimitives -k -g A01_27_filter.vcf >A01_27_filter_allelic.vcf
+$vcfallelicprimitives -k -g A01_31_filter.vcf >A01_31_filter_allelic.vcf
+$vcfallelicprimitives -k -g A01_35_filter.vcf >A01_35_filter_allelic.vcf
+$vcfallelicprimitives -k -g A01_39_filter.vcf >A01_39_filter_allelic.vcf
+$vcfallelicprimitives -k -g A01_62_filter.vcf >A01_62_filter_allelic.vcf
+$vcfallelicprimitives -k -g A01_63_filter.vcf >A01_63_filter_allelic.vcf
+
+
+##Step 7: Variant effect prediction with snpeff ann
+
+$snpeff download R64-1-1.99
+$snpeff ann R64-1-1.99  A01_09_filter_allelic.vcf > A01_09_filter_annot.vcf
+$snpeff ann R64-1-1.99  A01_11_filter_allelic.vcf > A01_11_filter_annot.vcf
+$snpeff ann R64-1-1.99  A01_24_filter_allelic.vcf > A01_24_filter_annot.vcf
+$snpeff ann R64-1-1.99  A01_27_filter_allelic.vcf > A01_27_filter_annot.vcf
+$snpeff ann R64-1-1.99  A01_31_filter_allelic.vcf > A01_31_filter_annot.vcf
+$snpeff ann R64-1-1.99  A01_35_filter_allelic.vcf > A01_35_filter_annot.vcf
+$snpeff ann R64-1-1.99  A01_39_filter_allelic.vcf > A01_39_filter_annot.vcf
+$snpeff ann R64-1-1.99  A01_62_filter_allelic.vcf > A01_62_filter_annot.vcf
+$snpeff ann R64-1-1.99  A01_63_filter_allelic.vcf > A01_63_filter_annot.vcf
+
+
+#Please see the jupyter notebook attached for the python code.
