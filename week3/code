@@ -23,3 +23,12 @@ $cut -d " " -f 3-12 plink.eigenvec > covar_10
 $plink --vcf genotypes.vcf --pheno CB1908_IC50.txt --covar covar_10 --allow-no-sex  --assoc --out CB1908_IC50
 $plink --vcf genotypes.vcf --pheno GS451_IC50.txt --covar covar_10 --allow-no-sex  --assoc --out GS451_IC50
 
+
+##QUESTION 5
+#EXTRACT THE SNP DATA FROM THE GENOTYPE FILE
+
+$plink --vcf genotypes.vcf --snp rs7257475 --recode A --out rs7257475_genotypes
+
+$plink --vcf genotypes.vcf --snp rs10876043 --recode A --out rs10876043_genotypes
+
+
