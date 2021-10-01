@@ -1,0 +1,25 @@
+wget https://github.com/bxlab/qbb2021/raw/main/week3/genotypes.vcf
+wget https://github.com/bxlab/qbb2021/raw/main/week3/GS451_IC50.txt
+wget https://github.com/bxlab/qbb2021/raw/main/week3/CB1908_IC50.txt
+
+##QUESTION 1
+##Perfrom PCA analysis using the genotypes file
+
+$plink -vcf genotypes.vcf -pca
+
+##QUESTION 2
+##USE THE GENOTYPE FILE TO MAKE A FILE WITH ALL THE FREQUENCIES (MAF)
+##PLOTED USING PYTHON (SEE THE PLOTS.IPYNB FOR THE HISTOGRAM)
+
+$plink --vcf genotypes.vcf --freq --out freq
+
+##QUESTION 3
+##MAKE ANOTHER FILE WITH JUST THE FIRST 10 COVARIANTS FROM THE EIGENVECTOR FILE 
+
+$cut -d " " -f 3-12 plink.eigenvec > covar_10
+
+##USING PLINK PERFORM THE ASSOCIATION ANALYSIS FOR CB1908_IC50 AND GS451_IC50
+
+$plink --vcf genotypes.vcf --pheno CB1908_IC50.txt --covar covar_10 --allow-no-sex  --assoc --out CB1908_IC50
+$plink --vcf genotypes.vcf --pheno GS451_IC50.txt --covar covar_10 --allow-no-sex  --assoc --out GS451_IC50
+
