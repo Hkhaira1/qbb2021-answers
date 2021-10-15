@@ -1,0 +1,45 @@
+wget https://bx.bio.jhu.edu/data/msauria/cmdb-lab/g1e.tar.xz
+tar xzf g1e.tar.xz
+
+##Run bowtie to index the files
+$bowtie2 -x /Users/cmdb/data/indexes/bowtie2/mm10/mm10 -U CTCF_ER4.fastq > CTCF_ER4_index
+$bowtie2 -x /Users/cmdb/data/indexes/bowtie2/mm10/mm10 -U CTCF_G1E.fastq > CTCF_G1E_index
+$bowtie2 -x /Users/cmdb/data/indexes/bowtie2/mm10/mm10 -U input_ER4.fastq > input_ER4_index
+$bowtie2 -x /Users/cmdb/data/indexes/bowtie2/mm10/mm10 -U input_G1E.fastq > input_G1E_index
+
+##USE MACS2 TO CALL CHIP-SEQ PEAKS
+$macs2 callpeak -c input_ER4_index  -t CTCF_ER4_index -f AUTO -n ER4
+
+$macs2 callpeak -c input_G1E_index  -t CTCF_G1E_index -f AUTO -n G1E
+
+##Do Differential binding
+$bedtools subtract -a G1E_peaks.narrowPeak -b ER4_peaks.narrowPeak > CTCF_gained.bed
+
+$bedtools subtract -a ER4_peaks.narrowPeak -b G1E_peaks.narrowPeak > CTCF_lost.bed
+
+##Feature overlapping
+$wget https://raw.githubusercontent.com/bxlab/qbb2020/master/week5/Mus_musculus.GRCm38.94_features.bed
+
+
+$bedtools intersect -wb -a Mus_musculus.GRCm38.94_features.bed -b G1E_peaks.narrowPeak > intersect_G1E.bed
+
+$bedtools intersect -wb -a Mus_musculus.GRCm38.94_features.bed -b ER4_peaks.narrowPeak > intersect_ER4.bed
+
+$conda activate chipseq
+
+$sort -k8,8nr ER4_peaks.narrowPeak > ER4_sorted.narrowPeak
+
+$head -n 100 ER4_sorted.narrowPeak > ER4_top100.narrowPeak
+
+$bedtools getfasta -fi /Users/cmdb/data/genomes/mm10.fa -bed ER4_top100.narrowPeak > ER4_top100.fa
+
+$meme-chip -db /Users/cmdb/data/meme_db/motifs/motif_databases.12.21.tgz  ER4_top100.fa -maxw 20
+
+$wget https://bx.bio.jhu.edu/data/msauria/cmdb-lab/JASPAR2018_CORE_non-redundant_pfms_meme.zip
+
+$unzip JASPAR2018_CORE_non-redundant_pfms_meme.zip
+
+##Use the combined motifs file and all the meme files created when downloading jasper
+$tomtom combined.meme  MA*
+
+##See the notebook for the plots##
