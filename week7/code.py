@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import sys
 ##I had to import the fastareader code because I could not get it to work.
 def FASTAReader(file):
@@ -48,7 +49,7 @@ def FASTAReader(file):
 fasta_sequences=FASTAReader(open(sys.argv[1],'r'))
 scoring_matrix_file=(open(sys.argv[2],'r')) #10
 gap_penalty= float(sys.argv[3])
-#out_filepath=sys.argv[4]
+out_filepath=sys.argv[4]
 
 
 
@@ -81,13 +82,13 @@ for line in scoring_matrix_file:
 
 ##STEP 2 Initailing matrics
 
-scoring_matrix = np.array(scoring_matrix_list)
+scoring_matrix = pd.read_csv(sys.argv[2],delim_whitespace=True,index_col=0)
 
 #start F matrix
 F_matrix = np.zeros((len(sequence1)+1, len(sequence2)+1))
 
 #start traceback matrix
-traceback = np.zeros((len(sequence1)+1, len(sequence2)+1))
+traceback = np.empty((len(sequence1)+1, len(sequence2)+1), dtype= str)
 
 ##STEP 3 Populating the matrics
 
@@ -96,31 +97,79 @@ traceback = np.zeros((len(sequence1)+1, len(sequence2)+1))
 # first row
 for i in range(len(sequence1)+1):
     F_matrix[i,0] = i*gap_penalty
-    traceback[i,0] = -1
+    
     #First column
 for j in range(len(sequence2)+1):
     F_matrix[0,j] = j*gap_penalty
-    traceback[0,j] = 1
+    
     # Populate the matrix
-for i in range(len(sequence1)+1):
-    for j in range(len(sequence2)+1):# loop through columns
-#             #Need to first get match score from score matrix
-        index1 = scoring_matrix_index.index(sequence1[i-1])
-        index2 = scoring_matrix_index.index(sequence2[j-1])
-        
-        match_score = scoring_matrix[index1, index2]
-        d = F_matrix[i-1, j-1] + match_score
-        d = F_matrix[i-1, j-1] + mismatch_score
+
+
+for i in range(1,len(sequence1)+1):
+    for j in range(1,len(sequence2)+1):
+        #loop through columns
+#Need to first get match score from score matrix
+        d=F_matrix[i-1,j-1] + scoring_matrix.loc[sequence1[i-1],sequence2[j-1]]
+        # index1 = scoring_matrix_index.index(sequence1[i-1])
+#         index2 = scoring_matrix_index.index(sequence2[j-1])
+#
+#         match_score = scoring_matrix[index1, index2]
+            
+
+        # d = F_matrix[i-1, j-1] + match_score
+ #        d = F_matrix[i-1, j-1] + mismatch_score
         h = F_matrix[i, j-1] + gap_penalty
         v = F_matrix[i-1, j] + gap_penalty
+        
         F_matrix[i,j] = max(d, h, v)
-        if d == max(d, h, v):
-            traceback[i,j] = 0
-        elif h == max(d, h, v):
-             traceback[i,j] = 1
-        else:
-            traceback[i,j] = -1
+        if max(d, h, v) == d:
+            traceback[i,j] = 'd'
+        elif max(d, h, v) == h:
+             traceback[i,j] = 'h'
+        elif  max(d,h,v)== v:
+            traceback[i,j] = 'v'
+
+#print(F_matrix)
+#print(traceback)
+
+i,j = (len(sequence1),len(sequence2))
+a=''
+b=''
+
+while i>0 and j>0:
+    if traceback[i,j]== 'd':
+        a+=sequence1[i-1]
+        b+=sequence2[j-1]
+        i,j=i-1,j-1
+        continue
+    if traceback[i,j]=='h':
+        a+=sequence1[i-1]
+        b+='-'
+        i,j=i,j-1
+        continue
+    if traceback[i,j]=='v':
+        a+='-'
+        b+=sequence2[j-1]
+        i,j=i-1,j
+        continue
+        
+c=a[::-1]
+d=b[::-1]
 
 
 
+output1= open(out_filepath,'w')
+output1.write('Align 1:|t{}|n'.format(c))
+output1.write('Align 1:|t{}|n'.format(d))
+output1.close()
 
+output2= open(out_filepath,'w')
+output2.write('Align 1:|t{}|n'.format(c))
+output2.write('Align 1:|t{}|n'.format(d))
+output2.close()
+
+count1=c.count('-')
+count2=d.count('-')
+print(count1)
+print(count2)
+print(F_matrix[-1,-1])
