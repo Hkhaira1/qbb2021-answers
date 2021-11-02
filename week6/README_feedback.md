@@ -1,1 +1,3 @@
 Good work! In your gene expression histogram, make sure you include a line denoting your cut off for expressed vs. not expressed. Your compartment bed file is in a format that I suspect bedtools can't use. Bed tools should be tab separated rather than comma separated, but please also look up bed file formatting to see how they should be structured. In your final bedtools map command, you should be mapping the comparments onto the `K562_hg19_FPKM_chr3_mapnorm.bed` file you created in the previous step (-0.5). I think this also impacted your violin plots, because what you have for gene compartment is not correct (-0.5). The violin plots should also be a single plot so you can compare them.
+
+3/4
