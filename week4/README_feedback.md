@@ -5,3 +5,5 @@ Hi Harjit,
 - So, can you do the extraction and then re-plot? 
 
 2.5/5
+
+- I extracted the data and reploted it. 
