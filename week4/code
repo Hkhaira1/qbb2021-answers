@@ -6,31 +6,28 @@ tar xzf methylation_fastq.tar.gz
 $fastqc *.fastq -o
 
 #make a folder called index and put the chr6 refernce genome inside it
-$mkdir index
-$cp chr6.fa.gz /Users/cmdb/qbb2021-answers/week4/index
+$mkdir index_folder
+$cp chr6.fa.gz /Users/cmdb/qbb2021-answers/week4/index_folder
 
 ## create an index for mapping chr6 using the whole index folder
-bismark_genome_preparation index --parallel 7
+bismark_genome_preparation index_folder
 
 #INDEX THE REFERENCE GENOME FOR THE TWO SRR FILES
-$Bismark --fastq index -1 SRR3083926_1.chr6.fastq -2 SRR3083926_2.chr6.fastq Bisulfite_Genome
+$bismark --fastq index_folder -1 SRR3083926_1.chr6.fastq -2 SRR3083926_2.chr6.fastq
 
-$Bismark --fastq index -1 SRR3083929_1.chr6.fastq -2 SRR3083929_2.chr6.fastq Bisulfite_Genome
+$bismark --fastq index_folder -1 SRR3083929_1.chr6.fastq -2 SRR3083929_2.chr6.fastq
 
 #DUPLICATE THE RESULTING BAM FILES
 $deduplicate_bismark *.bam
 
 #SORT THE DUPLICATED FILE 
-$samtools sort SRR3083926_1.chr6_bismark_bt2_pe.deduplicated.bam -o SRR3083926.ch6_sorted.bam
-$samtools sort SRR3083929_1.chr6_bismark_bt2_pe.deduplicated.bam -o SRR3083929.ch6_sorted.bam
+$samtools sort -n SRR3083926_1.chr6_bismark_bt2_pe.deduplicated.bam -o E4.0_sorted.bam
+$samtools sort -n SRR3083929_1.chr6_bismark_bt2_pe.deduplicated.bam -o E5.5_sorted.bam
 
-#INDEX THE RESULTING SORTED FILES FROM ABOVE
-$samtools index SRR3083926.ch6_sorted.bam
-$samtools index SRR3083929.ch6_sorted.bam
 
 #EXTRACT METHYLATION DATA FROM THE DUPLICATED FILES AND VEIW ON IGV
-$bismark_methylation_extractor --bedgraph --comprehensive SRR3083926_1.chr6_bismark_bt2_pe.deduplicated.bam
-$bismark_methylation_extractor --bedgraph --comprehensive SRR3083929_1.chr6_bismark_bt2_pe.deduplicated.bam
+$bismark_methylation_extractor --bedgraph --comprehensive E4.0_sorted.bam
+$bismark_methylation_extractor --bedgraph --comprehensive E5.5_sorted.bam
 
 $igv
 
