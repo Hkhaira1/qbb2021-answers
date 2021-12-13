@@ -3,4 +3,10 @@ This is a good start! Clustermap and dendrogram both look fine. With the regress
 2.5/7
 
 
-I added the sex and stage columns to the transform df and named it transfrom2. From there I did my qqplot again and found the genes that were differentially expressed by stage and sex (the two text files named gene_list and sex_gene_list) and found the overlap between those two (overlap.txt). Finally I ploted the volcano plot. 
+I added the sex and stage columns to the transform df and named it transfrom2. From there I did my qqplot again and found the genes that were differentially expressed by stage and sex (the two text files named gene_list and sex_gene_list) and found the overlap between those two (overlap.txt). Finally I ploted the volcano plot.
+
+Great work! Just a couple of minor things:
+1. For the QQ plots, the expected distribution is not a normal distribution. Under the null hypothesis, the expected distribution of the p-values is a uniform distribution (think about it, for any given alpha, you would expect the same proportion of p-values to be below that alpha, just by chance). Currently, you're comparing your p-values to a normal distribution, which doesn't make a ton of sense. (-1)
+2.I also think you're grabbing the wrong pvalues from the results. It looks like you're grabbing the p-value of the intercept, rather than that of stage. This is also probably why your volcano plot does not look as it should. (-1)
+
+5/7
