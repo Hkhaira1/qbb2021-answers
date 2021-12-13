@@ -1,3 +1,5 @@
+- Regrade 12/31/21 - great work ! 8/8 
+
 4. When you run freebayes, you should be running it on all of the bam files at once, to create one combined vcf. You'll use this vcf for parts 5-8. You'll need to modify your answer for step 2, so that in your R string, the samples have different ids (ID) as well (-0.25)
  
 7. I'm missing the first 1000 lines of your final vcf (-0.5)
