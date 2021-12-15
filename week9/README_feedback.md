@@ -10,3 +10,5 @@ Great work! Just a couple of minor things:
 2.I also think you're grabbing the wrong pvalues from the results. It looks like you're grabbing the p-value of the intercept, rather than that of stage. This is also probably why your volcano plot does not look as it should. (-1)
 
 5/7
+
+I fixed the qq plots and ploted the correct P-vaules for both sex and stage diff expressed genes. I also corrted the valcano plot based on those p-vlalues. 
