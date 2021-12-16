@@ -12,3 +12,5 @@ Great work! Just a couple of minor things:
 5/7
 
 I fixed the qq plots and ploted the correct P-vaules for both sex and stage diff expressed genes. I also corrted the valcano plot based on those p-vlalues. 
+
+12/15: I see the updates, 7/7
