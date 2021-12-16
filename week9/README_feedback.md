@@ -14,3 +14,5 @@ Great work! Just a couple of minor things:
 I fixed the qq plots and ploted the correct P-vaules for both sex and stage diff expressed genes. I also corrted the valcano plot based on those p-vlalues. 
 
 12/15: I see the updates, 7/7
+^
+A note from Dylan: Your p-values are all a bit off, and the reason is because you accidently removed male_10 and male_11 from your dataframe. You also accidently dropped two of the stage 14 points in your first regression. But, everything else about the code looks totally correct.
